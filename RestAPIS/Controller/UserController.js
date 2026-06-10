@@ -1,5 +1,5 @@
 const User = require('../Modules/User');
-const {InstagramRegister} = require('../Setting/OTPSender');
+const {InstagramRegister, ForgetPasswordOtp} = require('../Setting/OTPSender');
 const bcryptHash = require('bcrypt');
 const {genarateAuthoToken} = require('../Setting/Oautho');
 
@@ -26,7 +26,7 @@ exports. UserRegister = async (req, res) => {
             Name, Gmail, Password, Age, Otp:OtpGanerate, OTPExpiration: OtpexpiredTimeset
         });
     
-        return res.status(200).json({
+        return res.status(201).json({
             status: 'Success', 
             message: 'OTP send your email!. Please check and verify',
             Data: {
@@ -73,7 +73,7 @@ exports.OtpVerify = async (req, res) => {
             OTPExpiration: null
         });
 
-        return res.status(200).json({status: 'success', message: 'Opt verifaid. Now you can login'});
+        return res.status(201).json({status: 'success', message: 'Opt verifaid. Now you can login'});
     } catch (error) {
         return res.status(500).json({status: 'failed', message: error.message});
     }
@@ -88,7 +88,7 @@ exports.UserLogin = async (req, res) => {
         const UserLogin = await User.findOne({where: {Gmail: Gmail}});
 
         if (!UserLogin) {
-            return res.status(401).json({status: 'Failed', message: 'User not found'});
+            return res.status(404).json({status: 'Failed', message: 'User not found'});
         }
 
         if (!UserLogin.isVerified) {
@@ -103,7 +103,7 @@ exports.UserLogin = async (req, res) => {
 
         return res.status(200).json({status: 'success', message: 'Login sucessfulley!', authotoken: Oauth});
     } catch (error) {
-        return res.status(500).json({status: 'success', message: error.message});
+        return res.status(500).json({status: 'failed', message: error.message});
     }
 };
 
@@ -114,7 +114,7 @@ exports.UserLogin = async (req, res) => {
 exports.GetALLUsers = async (req, res) => {
     try {
         const users = await User.findAll({attributes:{exclude:['Password', 'isVerified', 'OTPExpiration', 'Otp']}, order: [['id', 'DESC']],});
-        return res.status(200).json({status: 'Success', message: 'Get user profile successfulley', data: users});
+        return res.status(200).json({status: 'Success', message: 'Get user profile successfulley', data: users, count:users.length});
     } catch (error) {
         return res. status(500).json({status: 'Failed', message: error.message});
     }
@@ -136,10 +136,9 @@ exports.GetSingleUsers = async (req, res) => {
 };
 
  //UpdateUserDetailes
-
 exports.UpdateUser = async (req, res) => {
     try {
-        const {Name, Age, Gmail}=req.body;
+        const {Name, Age, Gmail}=req.body; 
         const Updateuser = await User.findOne({where: {id: req.params.id}});
         if (!Updateuser) {
             return res.status(404).json({status: 'Failed', message: 'User not found'});
@@ -206,5 +205,88 @@ exports.LogOut = async (req, res) => {
         return res.status(200).json({status: 'success', message: 'Logout successfulley!'});
     } catch (error) {
         return res.status(500).json({status: 'failed', message: error.message});
+    }
+};
+
+
+
+// Forget Passowrd Otp
+
+exports.ForgetpassowrodOtpEmailMSg = async (req, res) => {
+    try {
+        const {Gmail} = req.body;
+        const userGmail = await User.findOne({where: {Gmail}}); 
+        if (!userGmail) {
+            return res.status(404).json({status: 'Failed', message: 'User not'});
+        }
+        const OtpGenerate = Math.floor(100000 + Math.random() * 900000).toString();
+        const OtpExpiedTimeOut = new Date (Date.now() + 10 * 60 * 1000);
+
+        const EmailSender = await ForgetPasswordOtp(Gmail, userGmail.Name, OtpGenerate);
+
+        const savedUser = await userGmail.update({
+            Otp: OtpGenerate,
+            OTPExpiration: OtpExpiedTimeOut 
+        });
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'OTP sent to your email! Please check and verify.!',
+            data: {
+                Gmail: savedUser.Gmail,
+                Name: savedUser.Name,
+                Otp: savedUser.Otp,
+                OTPExpiration: savedUser.OTPExpiration
+            }
+        });
+   
+    } catch (error) {
+        return res.status(500).json({status: 'Failed', message: error.message});
+    }
+};
+
+
+
+// Reset Password Otp
+
+exports.ResetPassowrd = async (req, res) => {
+    try {
+        const {Gmail, Otp, NewPassword, ConfirmPassword} = req.body;
+        const UserPassowrdUpdate = await User.findOne({where: {Gmail}});
+
+        if (!UserPassowrdUpdate) {
+            return res.status(404).json({status: 'Failed', message: 'user not found'});
+        }
+
+        if (!UserPassowrdUpdate.isVerified) {
+            return res.status(400).json({status: 'Failed', message: 'Already verified'});
+        }
+
+        if (UserPassowrdUpdate.Otp !== Otp) {
+            return res.status(400).json({status: 'Failed', message: 'Invalid OTP!'});
+        }
+
+        if (NewPassword !== ConfirmPassword) {
+            return res.status(400).json({status: 'Failed', message: 'Passwords do not match!'});
+        }
+
+        if (new Date () >UserPassowrdUpdate.OTPExpiration) {
+            return res.status(400).json({status: 'failed', message: 'Otp Expired'});
+        }
+
+        const NewPassowrdWitHash = await bcryptHash.hash(NewPassword, 12);
+        await UserPassowrdUpdate.update({
+            Password: NewPassowrdWitHash,
+            Otp: null,
+            isVerified: true,
+            OTPExpiration: null
+        });
+
+        return res.status(200).json({
+            status: 'Success',
+            message: 'User passowrd update successfulley!',
+        });
+    } catch (error) {
+        return res.status(500).json({status: 'Failed', message: error.message});
     }
 };

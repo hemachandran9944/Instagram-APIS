@@ -8,6 +8,10 @@ router.post('/Otpverify', UserController.OtpVerify);
 router.post('/userlogin', UserController.UserLogin);
 router.post('/logout', UserController.LogOut);
 
+router.post('/reset-passowrd-otp', UserController.ForgetpassowrodOtpEmailMSg);
+router.post('/reset-passowrd', UserController.ResetPassowrd);
+
+
 router.get('/getallusers', UserController.GetALLUsers);
 router.get('/getsignleUsers/:id', AuthorizationTokenVerify, UserController.GetSingleUsers);
 

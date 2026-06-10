@@ -1,3 +1,4 @@
+const { text } = require('express');
 const nodemailer = require('nodemailer');
 const isMailer = nodemailer.createTransport({
     service: 'gmail',
@@ -40,4 +41,27 @@ const InstagramRegister = async (Gmail, Name, Otp) => {
 
 
 
-module.exports = {InstagramRegister};
+
+const ForgetPasswordOtp = async (Gmail, Name, Otp) => {
+    try {
+        const ForgetPsswordEmailMsg = {
+            from: `<${process.env.EMAIL}>`,
+            to: Gmail,
+            subject: 'forget passowrd otp',
+            text: `Dear ${Name},\n\n`+
+                `To reset your password, please use the following One-Time Password (OTP): ${Otp}\n\n`+
+                'Note: This code is valid for 10 minutes and should not be shared with anyone.\n\n'+
+                'If you did not request a password reset, please ignore this email.\n\n'+
+'Best regards,\n\n'+
+'Instagram Team.'
+        };
+        return await isMailer.sendMail(ForgetPsswordEmailMsg);
+    } catch (error) {
+        console.log('ForgetPasswordOtp', error.message);
+        throw error;
+    }
+};
+
+
+
+module.exports = {InstagramRegister, ForgetPasswordOtp};

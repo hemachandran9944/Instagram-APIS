@@ -37,6 +37,6 @@ const User = sequelize.define('UserProfile', {
         type: DataTypes.INTEGER,
         defaultValue: 0,
     }),
-}, {timestamps: true, tableName: 'users',})
+}, {timestamps: true, tableName: 'UserProfile',})
 
 module.exports = User
