@@ -1,7 +1,14 @@
-const multerfile = require('multer');
+const multer = require('multer');     
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
-const multer = require('multer');
+const path = require('path');
+
+
+const uploadir = path.join(__dirname, '../uploads')
+if (!fs.existsSync(uploadir)) {
+    fs.mkdirSync(uploadir);
+    console.log('Uplode Folder Create')
+}
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,9 +16,9 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const storage =  multerfile.diskStorage({
+const storage =  multer.diskStorage({
     destination: (req, file, cb)=>{
-        cb(null, 'uploads/');
+        cb(null, uploadir);
     },
     filename: (req, file, cb)=>{
         cb(null, Date.now() + '-' + file.originalname);
@@ -19,7 +26,7 @@ const storage =  multerfile.diskStorage({
 });
 
 
-const upload = multerfile({storage});
+const upload = multer({storage});
 
 const uploadImages = async (filepath) => {
     try {
@@ -30,7 +37,7 @@ const uploadImages = async (filepath) => {
             allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
         });
         fs.unlinkSync(filepath);
-        return await result;
+        return result;
     } catch (error) {
         console.log('ImageFileUplodeError', error.message)
     }

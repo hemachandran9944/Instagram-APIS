@@ -1,6 +1,5 @@
     const {DataTypes} = require('sequelize');
     const{sequelize } = require('../Config/PostgryQL');
-    const User = require('./Profile');
     const bcryptHash = require('bcrypt');
 
 

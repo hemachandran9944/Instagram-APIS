@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
 
-const genarateAuthoToken = (UserID) => {
+const genarateAuthoToken = (Userid) => {
     try {
         const seceratjwt = process.env.JsonWebToken;
         if (!seceratjwt) {
-            throw new error('Json web token error.Missing.env!');
+            throw new Error('Json web token error.Missing.env!');
         }
         return jwt.sign(
-            {id: UserID},
+            {id: Userid},
             seceratjwt,
             {expiresIn: '1d'}
         );
@@ -28,6 +28,7 @@ const AuthorizationTokenVerify = (req, res, next)=>{
         const decode    = jwt.verify(token, process.env.JsonWebToken);
         req.user        = decode;
         return next();
+
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({status: 'Failed', message: 'Unauthorized: Verification token has expired'});

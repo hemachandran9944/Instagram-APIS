@@ -1,7 +1,7 @@
 const {Sequelize} = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(process.env.PostgresURL({
+const sequelize = new Sequelize(process.env.PostgresURL||'postgresql://postgres:9944@localhost:5432/Instagram_APIS' , {
     dialect: 'postgres',
     logging: false,
 });

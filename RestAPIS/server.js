@@ -4,6 +4,7 @@ const {ConntecPgDB, sequelize} = require('./Config/PostgryQL');
 const {helmetConfig, ratelimitConfig} = require('./Config/Security');
 
 const UserRegister = require('./Routes/UserRoutes');
+const UserProfileDB = require('./Routes/UserProfileRoutes');
 
 
 const app = express();
@@ -19,6 +20,7 @@ app.use((req, res, next)=>{
 
 
 app.use('/api/user', UserRegister);
+app.use('/api/userprofile', UserProfileDB);
 
 app.use((req, res)=>{
     res.status(404).json({status: 'Failed', message: 'Route not found! Please check your URL request method.'});
@@ -27,7 +29,10 @@ app.use((req, res)=>{
 const StartServer = async ()=>{
     try {
         await ConntecPgDB();
-        await sequelize.sync({alter: true});
+        //await sequelize.sync({ force: true, alter: true });
+        await sequelize.sync({ force: true });
+        console.log('Table create sucessfulley');
+        
 
         const PORT = process.env.PORT||8000
         app.listen(PORT, ()=>{
