@@ -1,11 +1,8 @@
 const UserProfile = require('../Modules/UserProfile');
 const {uploadImages} = require('../Config/MulterFile');
-const { MessagingGeopermissionsInstance } = require('twilio/lib/rest/accounts/v1/messagingGeopermissions');
 
 
-
-// Profile Set
-
+// Instagram DB set
 exports. UserDP = async (req, res) => {
     try {
         if (!req.file) {
