@@ -20,25 +20,28 @@ isMailer.verify((error, success)=>{
     }
 });
 
-
 const InstagramRegister = async (Gmail, Name, Otp) => {
     try {
         const EmailSetting = { 
-            from: `<${process.env.EMAIL}>`,
+            from: `"Instagram Support" <${process.env.EMAIL}>`, 
             to: Gmail,
-            subject: 'Verify your - Instgram Account',
-            text: `Dear ${Name},\n\n`+
-                  'To activate your account and verify your email address, please use the One-Time Passowrd (OTP) provided below:\n\n'+
-                  `Verification Code ${Otp}\n\n`+
-                  'Note: This code is valid for the next 10 minutes only. For your account\'s security, please do not share this OTP with anyone.\n\n' +
-                  'If you did not initiate this registration, no further action is required. This email was sent to verify your address' 
+            subject: 'Verify Your Instagram Account - Action Required',
+            text: `Instagram Security Notification\n\n` +
+                  `Dear ${Name},\n\n` +
+                  `Thank you for starting your registration with Instagram. To complete your account setup and verify your email address, please use the One-Time Password (OTP) provided below:\n\n` +
+                  `User Account: ${Gmail}\n` +
+                  `Verification Code: ${Otp}\n\n` +
+                  `Please note that this code is strictly confidential and will remain valid for the next 10 minutes only. For your security, do not share this OTP with anyone.\n\n` +
+                  `If you did not initiate this request, you can safely ignore this email; no further action is required.\n\n` +
+                  `Best regards,\n` +
+                  `The Instagram Security Team\n\n` +
+                  `Note: This is an automated transmission. Please do not reply directly to this message.`
         };
         return await isMailer.sendMail(EmailSetting);
     } catch (error) {
         console.log('Email Sending error', error.message);
     }
 }
-
 
 
 

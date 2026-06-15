@@ -12,6 +12,7 @@ app.use(helmetConfig);
 app.use(ratelimitConfig);
 
 
+
 app.use(express.json());
 app.use((req, res, next)=>{
     console.log(`${req.method} Request to ${req.url}`);
@@ -32,16 +33,15 @@ const StartServer = async ()=>{
         //await sequelize.sync({ force: true, alter: true });
         await sequelize.sync({ force: true });
         console.log('Table create sucessfulley');
-        
-
-        const PORT = process.env.PORT||8000
-        app.listen(PORT, ()=>{
-            console.log(`Server running on port ${PORT}`)
-        });
-
     } catch (error) {
         console.log('Server Error', error.message);
     }
 };
+
+
+const PORT = process.env.PORT||8500
+app.listen(PORT, ()=>{
+    console.log(`Server running on port ${PORT}`)
+});
 
 StartServer();
