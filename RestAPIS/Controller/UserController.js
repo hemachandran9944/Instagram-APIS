@@ -8,7 +8,6 @@ const {genarateAuthoToken} = require('../Setting/Oautho');
 
 
 // Resgister 
-
 exports. UserRegister = async (req, res) => {
     try {
         const {Name, Password, Age, Gmail} = req.body;
@@ -31,7 +30,7 @@ exports. UserRegister = async (req, res) => {
             message: 'OTP send your email!. Please check and verify',
             Data: {
                 Name: RegisterNewUser.Name,
-                Email: RegisterNewUser.Email,
+                Gmail: RegisterNewUser.Gmail,
                 Otp: RegisterNewUser.Otp,
                 Age: RegisterNewUser.Age,
                 Password:RegisterNewUser.Password
@@ -54,11 +53,11 @@ exports.OtpVerify = async (req, res) => {
         const user = await User.findOne({where: {Gmail: Gmail}});
         
         if (!user) {
-            return res.status(404).json({status: 'Faliled', message: 'User not found'});
+            return res.status(404).json({status: 'falied', message: 'User not found'});
         }
 
         if (user.isVerified) {
-            return res.status(400).json({status: 'Falied', message: 'already verifaid'});
+            return res.status(400).json({status: 'falied', message: 'already verifaid'});
         }
 
         if (user.Otp !== Otp) {
@@ -66,7 +65,7 @@ exports.OtpVerify = async (req, res) => {
         }
 
         if (new Date () >user.OTPExpiration) {
-            return res.status(400).josn({status: 'failed', message: 'Otp Expired'});
+            return res.status(400).json({status: 'failed', message: 'Otp Expired'});
         }
 
         const Verification = await user.update({
@@ -123,7 +122,7 @@ exports.GetALLUsers = async (req, res) => {
 };
 
 
-// GetALLUsers
+// GetSinglseUser
 
 exports.GetSingleUsers = async (req, res) => {
     try {
@@ -131,7 +130,7 @@ exports.GetSingleUsers = async (req, res) => {
         if (!users) {
             return res.status(404).json({status: 'Failed', message: 'User not found'});
         }
-        return res.status(200).json({status: 'Success', message: 'get user profile successfulley!', date: users});
+        return res.status(200).json({status: 'Success', message: 'get user profile successfulley!', data: users});
     } catch (error) {
         return res.status(500).json({status: 'Failed', message: error.message});
     }

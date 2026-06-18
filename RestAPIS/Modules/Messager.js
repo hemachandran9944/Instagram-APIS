@@ -38,8 +38,9 @@ const Message = sequelize.define('Message', {
 }, {timestamps: true,  tableName: 'messages'});
 
 
-User.hasMany(Message, { foreignKey: 'SenderId', as: 'SentMessages' });
-User.hasMany(Message, { foreignKey: 'ReceiverId', as: 'ReceivedMessages' });
-Message.belongsTo(User, { foreignKey: 'SenderId', as: 'Sender' });
-Message.belongsTo(User, { foreignKey: 'ReceiverId', as: 'Receiver' });
+User.hasMany(Message, { foreignKey: 'SenderId', as: 'SentMessages'});
+User.hasMany(Message, { foreignKey: 'ReceiverId', as: 'ReceivedMessages'});
+Message.belongsTo(User, { foreignKey: 'SenderId', as: 'Sender'});
+Message.belongsTo(User, { foreignKey: 'ReceiverId', as: 'Receiver'});
 
+module.exports = Message;
