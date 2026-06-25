@@ -19,10 +19,10 @@ const UserProfile = sequelize.define('UserProfile', {
     UserID: {
         type: DataTypes.INTEGER,
         allowNull: false, 
-        unique: true,     
+        unique: true,
         references: {
             model: Users, 
-            key: 'id',       
+            key: 'id',
         },
         onDelete: 'CASCADE'
     }

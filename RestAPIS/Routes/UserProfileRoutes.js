@@ -9,4 +9,4 @@ router.post('/DP-set', AuthorizationTokenVerify, upload.single('DPImgage'), User
 
 
 
-module.exports = router
+module.exports = router;

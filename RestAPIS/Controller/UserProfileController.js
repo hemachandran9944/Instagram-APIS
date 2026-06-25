@@ -2,7 +2,8 @@ const UserProfile = require('../Modules/UserProfile');
 const {uploadImages} = require('../Config/MulterFile');
 
 
-// Instagram DB set
+// Instagram Profile set
+
 exports. UserDP = async (req, res) => {
     try {
         if (!req.file) {

@@ -13,12 +13,9 @@ const MessageRoutres = require('./Routes/MessageRoutes');
 
 const MessageController = require('./Controller/messageController');
 
-
 const app = express();
 app.use(helmetConfig);
 app.use(ratelimitConfig);
-
-
 
 app.use(express.json());
 app.use((req, res, next)=>{
@@ -26,11 +23,9 @@ app.use((req, res, next)=>{
     next();
 });
 
-
 app.use('/api/user', UserRegister);
 app.use('/api/userprofile', UserProfileDB);
 app.use('/api/chatHistory', MessageRoutres);
-
 
 app.use((req, res)=>{
     res.status(404).json({status: 'Failed', message: 'Route not found! Please check your URL request method.'});
@@ -45,9 +40,8 @@ const io = new Server(serverIO, {
 });
 
 
-
 io.use((socket, next) => {
-    try {
+try { 
         const token = socket.handshake.auth.token || socket.handshake.query.token;
 
         if (!token) {
@@ -56,7 +50,7 @@ io.use((socket, next) => {
         }
         const decoded = jwt.verify(token, process.env.JsonWebToken);
         socket.user = decoded; 
-        next(); 
+        next();
     } catch (error) {
         console.log('User JWT token handshake error:', error.message);
         return next(new Error('Authentication error: Invalid Token!'));
@@ -72,9 +66,7 @@ io.on('connection', (socket)=>{
         socket.join(socket.user.id.toString());
         console.log(`User ${socket.user.id} successfully joined room: ${socket.user.id}`);
     }
-
     MessageController.LiveChat(io, socket);
-
     socket.on('disconnect', ()=>{
         console.log(`User disconnected: ${socket.id}`);
     });
@@ -95,8 +87,6 @@ const StartServer = async ()=>{
         console.log('Server Error', error.message);
     }
 };
-
-
 
 
 StartServer();

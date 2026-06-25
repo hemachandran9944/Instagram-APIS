@@ -46,11 +46,9 @@
     }, {timestamps: true, tableName: 'users',})
 
 
-    Users.addHook('beforeCreate', async (user) => {
+Users.addHook('beforeCreate', async (user) => {
     user.Password = await bcryptHash.hash(user.Password, 10);
-    });
+});
 
 
-
-
-    module.exports = Users;
+module.exports = Users;

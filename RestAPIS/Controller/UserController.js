@@ -95,6 +95,7 @@ exports.UserLogin = async (req, res) => {
         if (!UserLogin.isVerified) {
             return res.status(401).json({status: 'Failed', message: 'Please verify OTP frist'});
         }
+        
         const isMatchPassword = await bcryptHash.compare(Password, UserLogin.Password);
 
         if (!isMatchPassword) {
@@ -114,7 +115,7 @@ exports.UserLogin = async (req, res) => {
 
 exports.GetALLUsers = async (req, res) => {
     try {
-        const users = await User.findAll({attributes:{exclude:['Password', 'isVerified', 'OTPExpiration', 'Otp']}, order: [['id', 'DESC']],});
+        const users = await User.findAll({attributes:{exclude:['Password', 'isVerified', 'OTPExpiration', 'Otp']}, order: [['id', 'DESC']]});
         return res.status(200).json({status: 'Success', message: 'Get user profile successfulley', data: users, count:users.length});
     } catch (error) {
         return res. status(500).json({status: 'Failed', message: error.message});
@@ -135,6 +136,8 @@ exports.GetSingleUsers = async (req, res) => {
         return res.status(500).json({status: 'Failed', message: error.message});
     }
 };
+
+
 
  //UpdateUserDetailes
 exports.UpdateUser = async (req, res) => {
