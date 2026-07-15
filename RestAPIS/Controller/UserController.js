@@ -29,7 +29,7 @@ exports. UserRegister = async (req, res) => {
             status: 'Success', 
             message: 'OTP send your email!. Please check and verify',
             Data: {
-                Name: RegisterNewUser.Name,
+                Name: RegisterNewUser.Name, 
                 Gmail: RegisterNewUser.Gmail,
                 Otp: RegisterNewUser.Otp,
                 Age: RegisterNewUser.Age,

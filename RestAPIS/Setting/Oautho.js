@@ -26,7 +26,7 @@ const AuthorizationTokenVerify = (req, res, next)=>{
         }
         const token     = authoHeader.split(' ')[1];
         const decode    = jwt.verify(token, process.env.JsonWebToken);
-        req.user        = decode;
+        req.user= decode;
         return next();
 
     } catch (error) {

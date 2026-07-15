@@ -11,7 +11,6 @@ exports.LiveChat = async (socketServer, socket) => {
 
                 const {receiverId, messageText} = data;
                 const senderId = socket.user?.id;
-
                 if (!receiverId || !messageText) {
                     console.log('Validation failed: receiverId or messageText missing');
                     return;
@@ -80,7 +79,7 @@ exports.GetChatHistory = async (req, res) => {
     try {
         const UserId = req.user.id;
         const {UserChatId} = req.params;
-        
+
         const chat = await MessageModel.findAll({
             where: {
                 [Op.or]: [
