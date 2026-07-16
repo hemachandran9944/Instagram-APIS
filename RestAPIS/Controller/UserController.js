@@ -11,9 +11,9 @@ const {genarateAuthoToken} = require('../Setting/Oautho');
 exports. UserRegister = async (req, res) => {
     try {
         const {Name, Password, Age, Gmail} = req.body;
-        const UserEmail = await User.findOne({where: {Gmail: Gmail}});
+        const existing = await User.findOne({where: {Gmail: Gmail}});
 
-        if (UserEmail) {
+        if (existing) {
             return res.status(400).json({status: 'Failed', message: 'User already register!'});
         }
 
@@ -31,7 +31,6 @@ exports. UserRegister = async (req, res) => {
             Data: {
                 Name: RegisterNewUser.Name, 
                 Gmail: RegisterNewUser.Gmail,
-                Otp: RegisterNewUser.Otp,
                 Age: RegisterNewUser.Age,
                 Password:RegisterNewUser.Password
             },

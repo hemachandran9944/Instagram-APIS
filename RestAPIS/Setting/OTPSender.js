@@ -1,5 +1,6 @@
-const { text } = require('express');
 const nodemailer = require('nodemailer');
+
+
 const isMailer = nodemailer.createTransport({
     service: 'gmail',
     auth: {
